@@ -597,7 +597,7 @@
 
 	.btn-primary {
 		padding: 0.75rem 1.5rem; /* px-6 py-3 */
-		background: rgb(37 99 235); /* bg-blue-600 */
+		background: #f4b357;
 		color: white;
 		border-radius: 0.375rem; /* rounded */
 		font-weight: 600; /* font-semibold */
