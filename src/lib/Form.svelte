@@ -48,8 +48,7 @@
 			form.state &&
 			form.zip &&
 			form.agree &&
-			(form.hasResellerLicense !== 'yes' || form.resellerPermit) &&
-			form.resellerCertificate
+			(form.hasResellerLicense !== 'yes' || (form.resellerPermit && form.resellerCertificate))
 		);
 	};
 
