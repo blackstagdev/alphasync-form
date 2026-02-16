@@ -197,10 +197,29 @@
 		form.referredBy = a.ref_code;
 		open = false;
 	}
+
+	function handleWebsiteInput(event) {
+		let value = event.target.value.trim();
+
+		// If empty, allow clearing
+		if (!value) {
+			form.website = '';
+			return;
+		}
+
+		// If user already typed http:// or https://, keep it
+		if (value.startsWith('http://') || value.startsWith('https://')) {
+			form.website = value;
+			return;
+		}
+
+		// Otherwise automatically prepend https://
+		form.website = `https://${value}`;
+	}
 </script>
 
 <form
-	class="mx-auto grid max-w-3xl gap-12"
+	class="mx-auto mb-4 grid max-w-3xl gap-12"
 	onsubmit={(e) => {
 		e.preventDefault();
 		submitForm();
@@ -244,7 +263,7 @@
 						bind:value={form.phone}
 						required
 						class="input w-full"
-						placeholder="(555) 123-4567"
+						placeholder="(888) 123-4567"
 					/>
 
 					{#if form.phone && !isValidUSPhone(form.phone)}
@@ -258,6 +277,7 @@
 	<!-- Business Profile -->
 	<section>
 		<h2 class="section-title">Business Profile</h2>
+		Business
 
 		<div class="grid gap-6">
 			<div class="flex flex-col gap-4 sm:flex-row">
@@ -266,19 +286,25 @@
 					<input id="companyName" bind:value={form.companyName} required class="input" />
 				</div>
 
-				<div class="w-full">
+				<!-- <div class="w-full">
 					<label for="businessType">Business Type</label>
 					<select id="businessType" bind:value={form.businessType} class="input">
 						<option value="Provider">Provider</option>
 						<option value="Clinic">Partner</option>
 					</select>
-				</div>
+				</div> -->
 			</div>
 
 			<div class="flex flex-col gap-4 sm:flex-row">
 				<div class="w-full">
 					<label for="website" class="required">Website</label>
-					<input id="website" bind:value={form.website} required class="input" />
+					<input
+						id="website"
+						bind:value={form.website}
+						required
+						class="input"
+						oninput={handleWebsiteInput}
+					/>
 				</div>
 
 				<div class="w-full">
@@ -397,7 +423,12 @@
 				{#if form.hasResellerLicense === 'yes'}
 					<div class="w-full">
 						<label for="resellerPermit" class="required">Reseller's Permit Number</label>
-						<input id="resellerPermit" bind:value={form.resellerPermit} required class="input" />
+						<input
+							id="resellerPermit"
+							bind:value={form.resellerPermit}
+							required={form.hasResellerLicense === 'yes'}
+							class="input"
+						/>
 					</div>
 				{/if}
 			</div>
