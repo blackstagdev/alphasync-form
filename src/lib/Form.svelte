@@ -215,6 +215,31 @@
 		// Otherwise automatically prepend https://
 		form.website = `https://${value}`;
 	}
+
+	function formatUSPhone(value) {
+		// Remove everything except digits
+		let digits = value.replace(/\D/g, '');
+
+		// Remove leading 1 if user types country code
+		if (digits.length === 11 && digits.startsWith('1')) {
+			digits = digits.slice(1);
+		}
+
+		// Limit to 10 digits
+		digits = digits.slice(0, 10);
+
+		const len = digits.length;
+
+		if (len === 0) return '';
+		if (len < 4) return `(${digits}`;
+		if (len < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+
+		return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+	}
+
+	function handlePhoneInput(e) {
+		form.phone = formatUSPhone(e.target.value);
+	}
 </script>
 
 <form
@@ -256,13 +281,16 @@
 
 				<div class="w-full">
 					<label for="phone" class="required">Phone</label>
+
 					<input
 						id="phone"
 						type="tel"
 						bind:value={form.phone}
+						oninput={handlePhoneInput}
 						required
 						class="input w-full"
-						placeholder="(888) 123-4567"
+						placeholder="(833) 123-4567"
+						inputmode="numeric"
 					/>
 
 					{#if form.phone && !isValidUSPhone(form.phone)}
@@ -312,7 +340,7 @@
 						id="taxId"
 						bind:value={form.taxId}
 						required
-						placeholder="12-3456789"
+						placeholder="123456789"
 						class="input"
 						type="number"
 					/>
