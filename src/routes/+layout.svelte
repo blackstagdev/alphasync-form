@@ -9,7 +9,8 @@
 
 	const GTM_IDS = {
 		google: 'GTM-TKJ2M4FD',
-		meta: 'GTM-N5CFXBGS'
+		meta: 'GTM-N5CFXBGS',
+		linkedin: 'GTM-M8X6QZ85'
 	};
 
 	function pickGtmId(gtmParam) {

@@ -99,7 +99,8 @@
 
 	const THANK_YOU = {
 		meta: 'https://providers.alphabiomedlabs.com/thank-you-m',
-		google: 'https://providers.alphabiomedlabs.com/thank-you-g'
+		google: 'https://providers.alphabiomedlabs.com/thank-you-g',
+		linkedin: 'https://providers.alphabiomedlabs.com/thank-you-li'
 	};
 
 	function getThankYouUrl() {
