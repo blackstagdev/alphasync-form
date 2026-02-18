@@ -258,12 +258,6 @@
 	}
 </script>
 
-<svelte:head>
-	{gtm?.header}
-</svelte:head>
-
-<svelte:body />
-
 <form
 	class="mx-auto mb-4 grid max-w-3xl gap-12"
 	onsubmit={(e) => {
