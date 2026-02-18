@@ -95,6 +95,18 @@
 		return data.publicUrl;
 	}
 
+	//for thank you page
+
+	const THANK_YOU = {
+		meta: 'https://providers.alphabiomedlabs.com/thank-you-m',
+		google: 'https://providers.alphabiomedlabs.com/thank-you-g'
+	};
+
+	function getThankYouUrl() {
+		const gtmParam = $page.url.searchParams.get('gtm'); // "meta" or "google"
+		return THANK_YOU[gtmParam] ?? THANK_YOU.google; // default google
+	}
+
 	async function submitForm() {
 		try {
 			loading = true;
@@ -150,14 +162,16 @@
 			if (error) throw error;
 
 			if (browser) {
+				// fire event
 				window.dataLayer = window.dataLayer || [];
 				window.dataLayer.push({
-					event: 'provider_intake_success'
+					event: 'provider_intake_success',
+					gtm_variant: $page.url.searchParams.get('gtm')
 				});
 
-				// redirect (absolute URL)
-				window.parent.location.href = 'https://providers.alphabiomedlabs.com/thank-you';
-				loading = false;
+				// redirect the entire GHL page
+				window.top.location.href = getThankYouUrl();
+				// (or window.parent.location.href = getThankYouUrl();)
 			}
 		} catch (err) {
 			console.error(err);
