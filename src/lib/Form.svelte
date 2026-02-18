@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { supabase } from '$lib/supabaseClient';
+	import { browser } from '$app/environment';
 
 	let form = $state({
 		firstName: '',
@@ -27,7 +28,10 @@
 		referredBy: '',
 		notes: '',
 		agree: false
+		// agreesms: false
 	});
+
+	let loading = $state(false);
 
 	const isValidNPI = (npi) => /^\d{10}$/.test(npi);
 	const isValidEIN = (ein) => /^(\d{2}-\d{7}|\d{9})$/.test(ein);
@@ -48,6 +52,7 @@
 			form.state &&
 			form.zip &&
 			form.agree &&
+			// form.agreesms &&
 			(form.hasResellerLicense !== 'yes' || (form.resellerPermit && form.resellerCertificate))
 		);
 	};
@@ -92,6 +97,7 @@
 
 	async function submitForm() {
 		try {
+			loading = true;
 			let resellerCertificateUrl = null;
 			let proofOfBusinessUrl = null;
 
@@ -138,11 +144,22 @@
 				notes: form.notes || null,
 
 				agree: form.agree
+				// sms: form.agreesms
 			});
 
 			if (error) throw error;
 
-			alert('Form submitted successfully!');
+			if (browser) {
+				window.dataLayer = window.dataLayer || [];
+				window.dataLayer.push({
+					event: 'provider_intake_success'
+				});
+
+				loading = false;
+
+				// redirect (absolute URL)
+				window.location.assign('https://providers.alphabiomedlabs.com/thank-you');
+			}
 		} catch (err) {
 			console.error(err);
 			alert('Submission failed. Check console.');
@@ -569,19 +586,35 @@
 		marketing communication from Alpha BioMed. Message frequency varies. Message & data rates may
 		apply. See our Terms & Conditions and Privacy Policy.
 	</p>
+	<div class="flex flex-col gap-3">
+		<!-- <div class="flex items-center gap-2">
+			<input id="agree" type="checkbox" bind:checked={form.agreesms} required />
+			<label for="agree" class="required">SMS Opt In</label>
+		</div> -->
 
-	<div class="flex items-center gap-2">
-		<input id="agree" type="checkbox" bind:checked={form.agree} required />
-		<label for="agree" class="required">I agree to the terms</label>
+		<div class="flex items-center gap-2">
+			<input id="agree" type="checkbox" bind:checked={form.agree} required />
+			<label for="agree" class="required">I agree to the terms</label>
+		</div>
 	</div>
 
-	<button
-		type="submit"
-		class="btn-primary cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-		disabled={!isFormValid()}
-	>
-		Submit
-	</button>
+	{#if loading}
+		<button
+			type="submit"
+			class="btn-primary cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+			disabled
+		>
+			Submitting...
+		</button>
+	{:else}
+		<button
+			type="submit"
+			class="btn-primary cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+			disabled={!isFormValid()}
+		>
+			Submit
+		</button>
+	{/if}
 </form>
 
 <style>
@@ -655,7 +688,7 @@
 
 	.btn-primary {
 		padding: 0.75rem 1.5rem; /* px-6 py-3 */
-		background: #f4b357;
+		background: #ef9c26ff;
 		color: white;
 		border-radius: 0.375rem; /* rounded */
 		font-weight: 600; /* font-semibold */
