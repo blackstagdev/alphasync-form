@@ -155,10 +155,9 @@
 					event: 'provider_intake_success'
 				});
 
-				loading = false;
-
 				// redirect (absolute URL)
-				window.location.assign('https://providers.alphabiomedlabs.com/thank-you');
+				window.parent.location.href = 'https://providers.alphabiomedlabs.com/thank-you';
+				loading = false;
 			}
 		} catch (err) {
 			console.error(err);
